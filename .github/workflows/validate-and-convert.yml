@@ -1,0 +1,85 @@
+name: Validate and Convert Sigma Rules
+
+on:
+  push:
+    paths:
+      - 'rules/**.yml'
+  pull_request:
+    paths:
+      - 'rules/**.yml'
+
+jobs:
+  validate-and-convert:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install sigma-cli and backends
+        run: pip install -r requirements.txt
+
+      - name: Validate all Sigma rules
+        run: |
+          echo "Validating Sigma rules..."
+          sigma check rules/
+          echo "All rules passed validation."
+
+      - name: Convert rules to SPL (Splunk)
+        run: |
+          echo "Converting rules to SPL..."
+          for rule in rules/*.yml; do
+            name=$(basename "$rule" .yml)
+            echo "  Converting $name..."
+            sigma convert -t splunk -p splunk_windows "$rule" > "output/splunk/${name}.spl"
+          done
+          echo "SPL conversion complete."
+
+      - name: Convert rules to KQL (Microsoft Sentinel)
+        run: |
+          echo "Converting rules to KQL..."
+          for rule in rules/*.yml; do
+            name=$(basename "$rule" .yml)
+            echo "  Converting $name..."
+            sigma convert -t kusto -p microsoft_xdr "$rule" > "output/sentinel/${name}.kql"
+          done
+          echo "KQL conversion complete."
+
+      - name: Generate coverage report
+        run: |
+          echo "# Detection Coverage Report" > coverage-report.md
+          echo "" >> coverage-report.md
+          echo "Generated: $(date -u)" >> coverage-report.md
+          echo "" >> coverage-report.md
+          echo "| Rule File | SPL | KQL |" >> coverage-report.md
+          echo "|-----------|-----|-----|" >> coverage-report.md
+          for rule in rules/*.yml; do
+            name=$(basename "$rule" .yml)
+            spl_status="✅"
+            kql_status="✅"
+            [ ! -f "output/splunk/${name}.spl" ] && spl_status="❌"
+            [ ! -f "output/sentinel/${name}.kql" ] && kql_status="❌"
+            echo "| $name | $spl_status | $kql_status |" >> coverage-report.md
+          done
+          cat coverage-report.md
+
+      - name: Commit converted outputs and coverage report
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "ci: auto-convert rules [skip ci]"
+          file_pattern: "output/** coverage-report.md"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"

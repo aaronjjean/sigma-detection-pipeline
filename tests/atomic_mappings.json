@@ -1,0 +1,114 @@
+{
+  "mappings": [
+    {
+      "rule_file": "T1059.001-powershell-encoded.yml",
+      "attack_id": "T1059.001",
+      "attack_name": "PowerShell Encoded Command Execution",
+      "atomic_test_numbers": [1],
+      "atomic_command": "Invoke-AtomicTest T1059.001 -TestNumbers 1",
+      "validated": false,
+      "splunk_fired": null,
+      "sentinel_fired": null,
+      "notes": ""
+    },
+    {
+      "rule_file": "T1053.005-scheduled-task.yml",
+      "attack_id": "T1053.005",
+      "attack_name": "Scheduled Task Creation",
+      "atomic_test_numbers": [1],
+      "atomic_command": "Invoke-AtomicTest T1053.005 -TestNumbers 1",
+      "validated": false,
+      "splunk_fired": null,
+      "sentinel_fired": null,
+      "notes": ""
+    },
+    {
+      "rule_file": "T1547.001-registry-run-key.yml",
+      "attack_id": "T1547.001",
+      "attack_name": "Registry Run Key Persistence",
+      "atomic_test_numbers": [1],
+      "atomic_command": "Invoke-AtomicTest T1547.001 -TestNumbers 1",
+      "validated": false,
+      "splunk_fired": null,
+      "sentinel_fired": null,
+      "notes": ""
+    },
+    {
+      "rule_file": "T1003.001-lsass-dump.yml",
+      "attack_id": "T1003.001",
+      "attack_name": "LSASS Credential Dumping",
+      "atomic_test_numbers": [1],
+      "atomic_command": "Invoke-AtomicTest T1003.001 -TestNumbers 1",
+      "validated": false,
+      "splunk_fired": null,
+      "sentinel_fired": null,
+      "notes": "Requires Sysmon Event ID 10 (ProcessAccess) in config"
+    },
+    {
+      "rule_file": "T1055.012-process-hollowing.yml",
+      "attack_id": "T1055.012",
+      "attack_name": "Process Hollowing",
+      "atomic_test_numbers": [1],
+      "atomic_command": "Invoke-AtomicTest T1055.012 -TestNumbers 1",
+      "validated": false,
+      "splunk_fired": null,
+      "sentinel_fired": null,
+      "notes": "Requires Sysmon Event ID 8 (CreateRemoteThread)"
+    },
+    {
+      "rule_file": "T1486-ransomware-encryption.yml",
+      "attack_id": "T1486",
+      "attack_name": "Data Encrypted for Impact",
+      "atomic_test_numbers": [1],
+      "atomic_command": "Invoke-AtomicTest T1486 -TestNumbers 1",
+      "validated": false,
+      "splunk_fired": null,
+      "sentinel_fired": null,
+      "notes": "Requires Sysmon file event logging"
+    },
+    {
+      "rule_file": "T1021.002-smb-lateral-movement.yml",
+      "attack_id": "T1021.002",
+      "attack_name": "SMB Lateral Movement",
+      "atomic_test_numbers": [1],
+      "atomic_command": "Invoke-AtomicTest T1021.002 -TestNumbers 1",
+      "validated": false,
+      "splunk_fired": null,
+      "sentinel_fired": null,
+      "notes": "Requires Windows System event log (Event 7045)"
+    },
+    {
+      "rule_file": "T1105-ingress-tool-transfer.yml",
+      "attack_id": "T1105",
+      "attack_name": "Ingress Tool Transfer via LOLBins",
+      "atomic_test_numbers": [1, 2],
+      "atomic_command": "Invoke-AtomicTest T1105 -TestNumbers 1,2",
+      "validated": false,
+      "splunk_fired": null,
+      "sentinel_fired": null,
+      "notes": ""
+    },
+    {
+      "rule_file": "T1562.001-disable-defender.yml",
+      "attack_id": "T1562.001",
+      "attack_name": "Disable Windows Defender",
+      "atomic_test_numbers": [1],
+      "atomic_command": "Invoke-AtomicTest T1562.001 -TestNumbers 1",
+      "validated": false,
+      "splunk_fired": null,
+      "sentinel_fired": null,
+      "notes": "Disable Defender in lab VM first"
+    },
+    {
+      "rule_file": "T1070.004-indicator-removal.yml",
+      "attack_id": "T1070.004",
+      "attack_name": "Indicator Removal — File Deletion",
+      "atomic_test_numbers": [1, 2],
+      "atomic_command": "Invoke-AtomicTest T1070.004 -TestNumbers 1,2",
+      "validated": false,
+      "splunk_fired": null,
+      "sentinel_fired": null,
+      "notes": ""
+    }
+  ]
+}

@@ -38,6 +38,12 @@ jobs:
           sigma check rules/
           echo "All rules passed validation."
 
+      - name: Create output directories
+        run: mkdir -p output/splunk output/sentinel
+
+      - name: Create output directories
+        run: mkdir -p output/splunk output/sentinel
+
       - name: Convert rules to SPL (Splunk)
         run: |
           echo "Converting rules to SPL..."

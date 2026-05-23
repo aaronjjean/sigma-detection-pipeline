@@ -4,9 +4,11 @@ on:
   push:
     paths:
       - 'rules/**.yml'
+      - '.github/workflows/**'
   pull_request:
     paths:
       - 'rules/**.yml'
+  workflow_dispatch:
 
 jobs:
   validate-and-convert:

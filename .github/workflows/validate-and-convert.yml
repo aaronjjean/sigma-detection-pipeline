@@ -1,5 +1,7 @@
 name: Validate and Convert Sigma Rules
 
+name: Validate and Convert Sigma Rules
+
 on:
   push:
     paths:
@@ -9,6 +11,9 @@ on:
     paths:
       - 'rules/**.yml'
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   validate-and-convert:

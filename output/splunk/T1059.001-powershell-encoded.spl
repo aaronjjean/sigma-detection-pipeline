@@ -1,0 +1,4 @@
+
+| rex field=CommandLine "(?<CommandLineMatch>.*\\s[A-Za-z0-9+/]{50,}={0,2}\\s*$)"
+| eval CommandLineCondition=if(isnotnull(CommandLineMatch), "true", "false")
+| search Image IN ("*\\powershell.exe", "*\\pwsh.exe") CommandLine IN ("* -EncodedCommand *", "* -encodedcommand *", "* -enc *", "* -ec *", "* -e *") OR CommandLineCondition="true"

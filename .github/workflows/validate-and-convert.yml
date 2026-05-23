@@ -1,7 +1,5 @@
 name: Validate and Convert Sigma Rules
 
-name: Validate and Convert Sigma Rules
-
 on:
   push:
     paths:

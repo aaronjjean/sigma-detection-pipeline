@@ -1,0 +1,1 @@
+(Image="*\\wmic.exe" CommandLine IN ("*process call create*", "*os get*", "*computersystem get*", "*shadowcopy delete*")) OR (ParentImage="*\\WmiPrvSE.exe" Image IN ("*\\cmd.exe", "*\\powershell.exe", "*\\wscript.exe", "*\\cscript.exe", "*\\mshta.exe"))

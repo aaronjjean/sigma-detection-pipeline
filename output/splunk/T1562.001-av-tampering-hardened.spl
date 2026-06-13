@@ -1,0 +1,1 @@
+EventType="SetValue" TargetObject IN ("*\\Windows Defender\\DisableAntiSpyware*", "*\\Windows Defender\\DisableAntiVirus*", "*\\Windows Defender\\Real-Time Protection\\DisableRealtimeMonitoring*", "*\\Windows Defender\\Real-Time Protection\\DisableBehaviorMonitoring*", "*\\Windows Defender\\Exclusions*") Details="DWORD (0x00000001)"

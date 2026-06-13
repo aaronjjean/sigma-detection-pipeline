@@ -1,0 +1,1 @@
+Image IN ("*\\explorer.exe", "*\\svchost.exe", "*\\notepad.exe", "*\\rundll32.exe") ParentImage IN ("*\\cmd.exe", "*\\powershell.exe", "*\\wscript.exe", "*\\cscript.exe") NOT (ParentImage IN ("*C:\\Windows\\System32\\*", "*C:\\Windows\\explorer.exe*"))

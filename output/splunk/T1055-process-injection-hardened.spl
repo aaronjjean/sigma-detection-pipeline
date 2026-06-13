@@ -1,0 +1,1 @@
+SourceImage IN ("*\\powershell.exe", "*\\cmd.exe", "*\\wscript.exe", "*\\cscript.exe", "*\\mshta.exe", "*\\regsvr32.exe") TargetImage IN ("*\\lsass.exe", "*\\svchost.exe", "*\\explorer.exe", "*\\winlogon.exe") NOT (SourceImage IN ("*C:\\Windows\\System32\\*", "*C:\\Program Files\\Windows Defender\\*"))

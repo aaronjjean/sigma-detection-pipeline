@@ -1,0 +1,1 @@
+source="WinEventLog:System" EventCode=7045 NOT (ImagePath IN ("*C:\\Windows\\System32\\*", "*C:\\Program Files\\*", "*C:\\Program Files (x86)\\*")) NOT (ServiceName IN ("*WindowsDefend*", "*MsMpEng*", "*WdNisSvc*"))

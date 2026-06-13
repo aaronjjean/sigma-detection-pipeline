@@ -1,0 +1,1 @@
+(Image="*\\sc.exe" CommandLine="*create*") OR (Image IN ("*\\net.exe", "*\\net1.exe") CommandLine IN ("*start*", "*stop*")) NOT (CommandLine IN ("*C:\\Windows\\System32\\*", "*C:\\Program Files\\*"))

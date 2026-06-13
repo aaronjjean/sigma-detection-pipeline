@@ -1,3 +1,4 @@
 sigma-cli
-pysigma-backend-splunk
-pysigma-backend-kusto
+pySigma-backend-splunk
+pySigma-backend-kusto
+pySigma-pipeline-windows

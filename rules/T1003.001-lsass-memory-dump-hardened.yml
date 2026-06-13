@@ -1,0 +1,40 @@
+title: LSASS Process Memory Access - Hardened (Sysmon Event 10)
+id: 4b6d8f0a-2c4e-6a8c-d0e2-4f6b8d0a2c4e
+status: experimental
+description: >
+  Hardened detection for T1003.001 using Sysmon Event ID 10 (ProcessAccess).
+  Detects any process opening LSASS with memory-read access rights regardless
+  of the tool used. Catches Mimikatz, Cobalt Strike, renamed tools, and custom
+  loaders that bypass process-name based rules. Access rights 0x1010 and
+  0x1410 are the signatures of credential dumping tools.
+references:
+  - https://attack.mitre.org/techniques/T1003/001/
+  - https://docs.microsoft.com/en-us/windows/win32/procthread/process-security-and-access-rights
+author: Aaron Jean
+date: 2026-06-13
+tags:
+  - attack.credential_access
+  - attack.t1003.001
+logsource:
+  category: process_access
+  product: windows
+detection:
+  lsass_access:
+    TargetImage|endswith: '\lsass.exe'
+    GrantedAccess|contains:
+      - '0x1010'
+      - '0x1410'
+      - '0x1438'
+      - '0x143a'
+      - '0x1418'
+      - '0x1fffff'
+  filter_legit:
+    SourceImage|contains:
+      - 'C:\Windows\System32\'
+      - 'C:\Windows\SysWOW64\'
+      - 'C:\Program Files\Windows Defender\'
+  condition: lsass_access and not filter_legit
+falsepositives:
+  - EDR agents and AV products accessing LSASS for monitoring
+  - Windows Defender Credential Guard operations
+level: critical

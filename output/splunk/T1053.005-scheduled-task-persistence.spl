@@ -1,0 +1,1 @@
+Image IN ("*\\schtasks.exe", "*\\at.exe") CommandLine IN ("*/create*", "*-create*")

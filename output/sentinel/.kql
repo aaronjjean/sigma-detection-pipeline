@@ -1,0 +1,7 @@
+Usage: sigma convert [OPTIONS] INPUT...
+Try 'sigma convert --help' for help.
+
+Error: The pipeline 'windows' was not found.
+List all installed processing pipelines with: sigma list pipelines kusto
+List pipeline plugins for installation with: sigma plugin list --plugin-type pipeline
+Pipelines not listed here are treated as file names.

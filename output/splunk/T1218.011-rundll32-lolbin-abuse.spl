@@ -1,0 +1,4 @@
+
+| rex field=CommandLine "(?<CommandLineMatch>.*rundll32.*\\s+[A-Za-z]:\\\\(?!Windows|Program Files).*\\.dll)"
+| eval CommandLineCondition=if(isnotnull(CommandLineMatch), "true", "false")
+| search (Image="*\\rundll32.exe" CommandLine IN ("*javascript:*", "*vbscript:*")) OR (Image="*\\rundll32.exe" CommandLine IN ("*ShellExec_RunDLL*", "*url.dll,OpenURL*", "*ieadvpack.dll*", "*advpack.dll,LaunchINFSection*", "*setupapi.dll,InstallHinfSection*")) OR (Image="*\\rundll32.exe" CommandLineCondition="true")

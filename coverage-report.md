@@ -1,6 +1,6 @@
 # Detection Coverage Report
 
-Generated: Sat Jun 13 19:03:56 UTC 2026
+Generated: Sat Jun 13 19:07:33 UTC 2026
 
 | Rule File | SPL | KQL |
 |-----------|-----|-----|
@@ -15,6 +15,8 @@ Generated: Sat Jun 13 19:03:56 UTC 2026
 | T1055-process-injection-hardened | ✅ | ❌ |
 | T1055-process-injection | ✅ | ❌ |
 | T1059.001-powershell-encoded | ✅ | ✅ |
+| T1218.011-rundll32-lolbin-abuse-hardened | ✅ | ❌ |
+| T1218.011-rundll32-lolbin-abuse | ✅ | ❌ |
 | T1543.003-malicious-service-creation-hardened | ✅ | ❌ |
 | T1543.003-malicious-service-creation | ✅ | ❌ |
 | T1562.001-av-tampering-hardened | ✅ | ❌ |

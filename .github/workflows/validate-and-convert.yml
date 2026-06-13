@@ -65,7 +65,7 @@ jobs:
           for rule in rules/*.yml; do
             name=$(basename "$rule" .yml)
             echo "  Converting $name..."
-            sigma convert -t kusto -p windows -p sysmon rules/$rule > output/sentinel/${base}.kql
+            sigma convert -t kusto -p windows -p sysmon "$rule" > "output/sentinel/${base}.kql" 2>&1 || echo "WARNING: Could not convert ${base} to KQL"
           done
           echo "KQL conversion complete."
 

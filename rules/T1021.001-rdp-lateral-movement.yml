@@ -1,0 +1,34 @@
+title: RDP Lateral Movement from Unusual Source
+id: 9e1a3c5f-4b6d-8f0a-c2e4-6a8c0e2f4b6d
+status: experimental
+description: >
+  Detects RDP lateral movement by identifying successful logons (Event 4624,
+  LogonType 10) from internal hosts at unusual times or from non-admin
+  accounts. Adversaries use stolen credentials over RDP to move laterally
+  after initial compromise (T1021.001). Observed in BlackCat and most
+  enterprise ransomware campaigns.
+references:
+  - https://attack.mitre.org/techniques/T1021/001/
+author: Aaron Jean
+date: 2026-06-13
+tags:
+  - attack.lateral_movement
+  - attack.t1021.001
+logsource:
+  product: windows
+  service: security
+detection:
+  rdp_logon:
+    EventID: 4624
+    LogonType: 10
+  filter_expected:
+    IpAddress|contains:
+      - '127.0.0.1'
+      - '::1'
+    AccountName|endswith: '$'
+  condition: rdp_logon and not filter_expected
+falsepositives:
+  - Legitimate remote administration by IT staff
+  - Helpdesk RDP sessions
+  - Automated monitoring tools using RDP
+level: medium

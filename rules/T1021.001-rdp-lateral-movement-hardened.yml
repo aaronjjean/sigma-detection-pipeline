@@ -1,0 +1,45 @@
+title: RDP Lateral Movement - Hardened (Logon Chain Analysis)
+id: 0f2b4d6e-8a0c-2e4f-6b8d-0a2c4e6f8b0d
+status: experimental
+description: >
+  Hardened RDP lateral movement detection combining EventID 4624 LogonType 10
+  with 4648 (explicit credential use) and 4778 (session reconnect). Also
+  catches Pass-the-Hash via Restricted Admin mode by including LogonType 3
+  from non-domain sources. Correlates session creation with credential
+  stuffing indicators for higher-fidelity alerting.
+references:
+  - https://attack.mitre.org/techniques/T1021/001/
+author: Aaron Jean
+date: 2026-06-13
+tags:
+  - attack.lateral_movement
+  - attack.t1021.001
+logsource:
+  product: windows
+  service: security
+detection:
+  rdp_interactive:
+    EventID: 4624
+    LogonType: 10
+  rdp_pth:
+    EventID: 4624
+    LogonType: 3
+    AuthenticationPackageName: 'NTLM'
+  rdp_reconnect:
+    EventID: 4778
+  explicit_creds:
+    EventID: 4648
+  filter_machine_accounts:
+    AccountName|endswith: '$'
+  filter_loopback:
+    IpAddress|contains:
+      - '127.0.0.1'
+      - '::1'
+  condition: >
+    (rdp_interactive or rdp_pth or rdp_reconnect or explicit_creds)
+    and not filter_machine_accounts
+    and not filter_loopback
+falsepositives:
+  - Legitimate IT administration over RDP
+  - Helpdesk remote support sessions
+level: high

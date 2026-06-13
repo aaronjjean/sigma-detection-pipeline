@@ -1,0 +1,44 @@
+title: Process Injection Detected via Memory Write - Hardened (Sysmon)
+id: 7d3f5b9e-2a4c-6e8a-b0d2-4c6e8a0b2d4c
+status: experimental
+description: >
+  Hardened detection for T1055 using Sysmon Event ID 8 (CreateRemoteThread).
+  Detects cross-process thread creation which is the final step in most
+  injection techniques. Flags when any process creates a thread in another
+  process, filtering known-legitimate cases. Catches VirtualAllocEx injection,
+  process hollowing, and shellcode loaders that evade process-creation rules.
+references:
+  - https://attack.mitre.org/techniques/T1055/
+author: Aaron Jean
+date: 2026-06-13
+tags:
+  - attack.defense_evasion
+  - attack.privilege_escalation
+  - attack.t1055
+logsource:
+  category: create_remote_thread
+  product: windows
+detection:
+  remote_thread:
+    SourceImage|endswith:
+      - '\powershell.exe'
+      - '\cmd.exe'
+      - '\wscript.exe'
+      - '\cscript.exe'
+      - '\mshta.exe'
+      - '\regsvr32.exe'
+  target_sensitive:
+    TargetImage|endswith:
+      - '\lsass.exe'
+      - '\svchost.exe'
+      - '\explorer.exe'
+      - '\winlogon.exe'
+  filter_legit:
+    SourceImage|contains:
+      - 'C:\Windows\System32\'
+      - 'C:\Program Files\Windows Defender\'
+  condition: (remote_thread and target_sensitive) and not filter_legit
+falsepositives:
+  - AV and EDR products injecting monitoring threads
+  - Legitimate debugging tools
+level: critical

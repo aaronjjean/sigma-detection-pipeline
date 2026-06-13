@@ -1,0 +1,36 @@
+title: Malicious Windows Service Created - Hardened (Event Log)
+id: 5e7a9c1d-3f5b-7d9e-b1c3-5a7c9e1f3b5d
+status: experimental
+description: >
+  Hardened detection for T1543.003 using EventID 7045 (new service installed).
+  Catches service creation regardless of what tool was used — sc.exe, PowerShell
+  New-Service, or direct registry writes. Filters known-good service paths to
+  reduce false positives.
+references:
+  - https://attack.mitre.org/techniques/T1543/003/
+author: Aaron Jean
+date: 2026-06-13
+tags:
+  - attack.persistence
+  - attack.privilege_escalation
+  - attack.t1543.003
+logsource:
+  product: windows
+  service: system
+detection:
+  new_service:
+    EventID: 7045
+  filter_legit_paths:
+    ImagePath|contains:
+      - 'C:\Windows\System32\'
+      - 'C:\Program Files\'
+      - 'C:\Program Files (x86)\'
+  filter_legit_names:
+    ServiceName|contains:
+      - 'WindowsDefend'
+      - 'MsMpEng'
+      - 'WdNisSvc'
+  condition: new_service and not filter_legit_paths and not filter_legit_names
+falsepositives:
+  - Third-party software installing to non-standard paths
+level: high

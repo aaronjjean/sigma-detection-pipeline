@@ -1,0 +1,39 @@
+title: Suspicious Windows Service Created via Command Line
+id: 2d4f6a8c-1b3e-5d7f-9a2c-4e6b8d0f2a4c
+status: experimental
+description: >
+  Detects new service creation via sc.exe or net.exe from the command line.
+  Adversaries install malicious services for persistence and privilege
+  escalation (T1543.003). Used by BlackCat, WannaCry, and most ransomware
+  families for driver/payload persistence.
+references:
+  - https://attack.mitre.org/techniques/T1543/003/
+author: Aaron Jean
+date: 2026-06-13
+tags:
+  - attack.persistence
+  - attack.privilege_escalation
+  - attack.t1543.003
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_sc:
+    Image|endswith: '\sc.exe'
+    CommandLine|contains: 'create'
+  selection_net:
+    Image|endswith:
+      - '\net.exe'
+      - '\net1.exe'
+    CommandLine|contains:
+      - 'start'
+      - 'stop'
+  filter_expected_paths:
+    CommandLine|contains:
+      - 'C:\Windows\System32\'
+      - 'C:\Program Files\'
+  condition: (selection_sc or selection_net) and not filter_expected_paths
+falsepositives:
+  - Legitimate software installing services during setup
+  - IT administration tools
+level: medium

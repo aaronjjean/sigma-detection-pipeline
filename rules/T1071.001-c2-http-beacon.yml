@@ -1,0 +1,47 @@
+title: Suspicious C2 Beaconing over HTTP/HTTPS
+id: 7a9c1e3f-5b7d-9f1a-3c5e-7b9d1f3a5c7e
+status: experimental
+description: >
+  Detects potential C2 beaconing behaviour via HTTP/HTTPS from non-browser
+  processes making outbound web requests. Adversaries use HTTP/HTTPS for C2
+  to blend with legitimate web traffic (T1071.001). Observed in Cobalt Strike,
+  Metasploit Meterpreter, and APT implants communicating with attacker
+  infrastructure.
+references:
+  - https://attack.mitre.org/techniques/T1071/001/
+author: Aaron Jean
+date: 2026-06-13
+tags:
+  - attack.command_and_control
+  - attack.t1071.001
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  selection_non_browser_http:
+    Initiated: 'true'
+    DestinationPort:
+      - 80
+      - 443
+      - 8080
+      - 8443
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+      - '\cmd.exe'
+      - '\wscript.exe'
+      - '\cscript.exe'
+      - '\mshta.exe'
+      - '\rundll32.exe'
+      - '\regsvr32.exe'
+  filter_legit_destinations:
+    DestinationHostname|endswith:
+      - '.microsoft.com'
+      - '.windowsupdate.com'
+      - '.windows.com'
+  condition: selection_non_browser_http and not filter_legit_destinations
+falsepositives:
+  - PowerShell scripts performing legitimate web requests
+  - Software updaters using PowerShell for downloads
+  - IT management tools making HTTP calls
+level: high

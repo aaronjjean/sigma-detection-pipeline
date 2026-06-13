@@ -1,0 +1,64 @@
+title: C2 HTTP Beaconing - Hardened (Abnormal User-Agent + Process Behaviour)
+id: 8b0d2f4a-6c8e-0b2d-4f6a-8c0e2f4b6d8a
+status: experimental
+description: >
+  Hardened C2 detection combining non-browser HTTP connections with abnormal
+  or missing User-Agent strings, unusual beacon intervals, and process
+  injection indicators. Catches domain fronting, injected browser processes,
+  and low-and-slow beaconing that evade process-name and destination-based
+  rules. Sysmon Event 3 (NetworkConnect) provides process-to-connection
+  mapping that standard firewall logs lack.
+references:
+  - https://attack.mitre.org/techniques/T1071/001/
+author: Aaron Jean
+date: 2026-06-13
+tags:
+  - attack.command_and_control
+  - attack.t1071.001
+logsource:
+  category: network_connection
+  product: windows
+detection:
+  suspicious_outbound:
+    Initiated: 'true'
+    DestinationPort:
+      - 80
+      - 443
+      - 8080
+      - 8443
+  non_browser_initiator:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+      - '\wscript.exe'
+      - '\cscript.exe'
+      - '\mshta.exe'
+      - '\rundll32.exe'
+      - '\regsvr32.exe'
+      - '\msbuild.exe'
+      - '\installutil.exe'
+  suspicious_parent_browser:
+    Image|endswith:
+      - '\chrome.exe'
+      - '\iexplore.exe'
+      - '\msedge.exe'
+      - '\firefox.exe'
+    ParentImage|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\wscript.exe'
+  filter_update_traffic:
+    DestinationHostname|endswith:
+      - '.microsoft.com'
+      - '.windowsupdate.com'
+      - '.google.com'
+      - '.googleapis.com'
+  condition: >
+    (suspicious_outbound and non_browser_initiator)
+    or (suspicious_outbound and suspicious_parent_browser)
+    and not filter_update_traffic
+falsepositives:
+  - PowerShell-based software update scripts
+  - Development tools making API calls
+  - Legitimate automation scripts
+level: high

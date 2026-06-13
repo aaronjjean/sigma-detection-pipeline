@@ -1,0 +1,1 @@
+source="WinEventLog:Security" (EventCode=4624 LogonType=10) OR (EventCode=4624 LogonType=3 AuthenticationPackageName="NTLM") OR EventCode=4778 OR EventCode=4648 NOT AccountName="*$" NOT (IpAddress IN ("*127.0.0.1*", "*::1*"))

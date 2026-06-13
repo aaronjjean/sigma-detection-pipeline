@@ -1,0 +1,1 @@
+(Image="*\\procdump.exe" CommandLine IN ("*lsass*", "*-ma*")) OR (Image="*\\taskmgr.exe" CommandLine="*lsass*") OR (Image="*\\rundll32.exe" CommandLine IN ("*comsvcs*", "*MiniDump*"))

@@ -1,9 +1,11 @@
 # Detection Coverage Report
 
-Generated: Sat Jun 13 12:21:46 UTC 2026
+Generated: Sat Jun 13 12:26:08 UTC 2026
 
 | Rule File | SPL | KQL |
 |-----------|-----|-----|
+| T1003.001-lsass-memory-dump-hardened | ✅ | ❌ |
+| T1003.001-lsass-memory-dump | ✅ | ❌ |
 | T1053.005-scheduled-task-persistence-hardened | ✅ | ❌ |
 | T1053.005-scheduled-task-persistence | ✅ | ❌ |
 | T1059.001-powershell-encoded | ✅ | ✅ |

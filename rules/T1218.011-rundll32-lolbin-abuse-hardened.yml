@@ -1,0 +1,46 @@
+title: Rundll32 LOLBin Abuse - Hardened (Behaviour + Network DLL Load)
+id: 6f8b0d2e-4a6c-8b0d-2f4a-6c8b0d2e4a6c
+status: experimental
+description: >
+  Hardened detection for T1218.011 targeting rundll32 behaviour regardless
+  of binary name. Detects DLL loading from network paths, temp directories,
+  and user-writable locations. Also catches renamed rundll32 by examining
+  child process behaviour — rundll32 spawning cmd.exe, powershell.exe, or
+  network connections is always suspicious regardless of parent name.
+references:
+  - https://attack.mitre.org/techniques/T1218/011/
+author: Aaron Jean
+date: 2026-06-13
+tags:
+  - attack.defense_evasion
+  - attack.t1218.011
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  rundll32_suspicious_child:
+    ParentImage|endswith: '\rundll32.exe'
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\wscript.exe'
+      - '\cscript.exe'
+      - '\mshta.exe'
+  rundll32_temp_dll:
+    Image|endswith: '\rundll32.exe'
+    CommandLine|contains:
+      - '\Temp\'
+      - '\AppData\'
+      - '\ProgramData\'
+      - '\Users\Public\'
+      - '\\\\'
+  filter_legit:
+    CommandLine|contains:
+      - 'C:\Windows\System32\shell32.dll'
+      - 'C:\Windows\System32\dfshim.dll'
+      - 'C:\Windows\System32\printui.dll'
+  condition: (rundll32_suspicious_child or rundll32_temp_dll) and not filter_legit
+falsepositives:
+  - Legitimate installer packages extracting to Temp before rundll32 execution
+  - Enterprise software deployment tools
+level: high

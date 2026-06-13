@@ -1,0 +1,42 @@
+title: Suspicious Rundll32 Execution - LOLBin Abuse
+id: 5e7a9c1f-3b5d-7f9a-1c3e-5b7d9f1a3c5e
+status: experimental
+description: >
+  Detects abuse of rundll32.exe to execute malicious code via known LOLBin
+  techniques including JavaScript execution, COM object abuse, and suspicious
+  DLL loading from non-standard paths. Adversaries use rundll32 to bypass
+  application whitelisting and execute payloads via a trusted signed binary
+  (T1218.011). Observed in APT campaigns and commodity malware loaders.
+references:
+  - https://attack.mitre.org/techniques/T1218/011/
+  - https://lolbas-project.github.io/lolbas/Binaries/Rundll32/
+author: Aaron Jean
+date: 2026-06-13
+tags:
+  - attack.defense_evasion
+  - attack.t1218.011
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection_js_execution:
+    Image|endswith: '\rundll32.exe'
+    CommandLine|contains:
+      - 'javascript:'
+      - 'vbscript:'
+  selection_suspicious_functions:
+    Image|endswith: '\rundll32.exe'
+    CommandLine|contains:
+      - 'ShellExec_RunDLL'
+      - 'url.dll,OpenURL'
+      - 'ieadvpack.dll'
+      - 'advpack.dll,LaunchINFSection'
+      - 'setupapi.dll,InstallHinfSection'
+  selection_non_system_dll:
+    Image|endswith: '\rundll32.exe'
+    CommandLine|re: '.*rundll32.*\s+[A-Za-z]:\\(?!Windows|Program Files).*\.dll'
+  condition: selection_js_execution or selection_suspicious_functions or selection_non_system_dll
+falsepositives:
+  - Legitimate software using rundll32 for installer functions
+  - Control Panel applet execution
+level: high

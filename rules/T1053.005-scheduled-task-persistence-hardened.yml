@@ -1,0 +1,31 @@
+title: Scheduled Task Persistence - Hardened (Event Log + Registry)
+id: 9a1b4c7d-2e5f-4b8a-c3d6-7e0f1a2b3c4d
+status: experimental
+description: >
+  Hardened detection for T1053.005 that catches both schtasks.exe and
+  PowerShell COM-based task creation by targeting Event ID 4698 (task
+  created) and registry writes to the scheduled tasks key. Covers
+  LOLBin renaming and COM-based evasion missed by process-based rules.
+references:
+  - https://attack.mitre.org/techniques/T1053/005/
+author: Aaron Jean
+date: 2026-06-13
+tags:
+  - attack.persistence
+  - attack.t1053.005
+logsource:
+  product: windows
+  service: security
+detection:
+  task_created_event:
+    EventID: 4698
+  filter_system_tasks:
+    SubjectUserName|endswith: '$'
+    TaskName|startswith:
+      - '\Microsoft\'
+      - '\Windows\'
+  condition: task_created_event and not filter_system_tasks
+falsepositives:
+  - Software installers running as user accounts
+  - Legitimate admin tooling
+level: high

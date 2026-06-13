@@ -1,0 +1,52 @@
+title: WMI Execution - Hardened (Subscription Persistence + Remote Execution)
+id: 4d6f8b0c-2e4a-6f8b-0d2e-4a6f8b0c2e4a
+status: experimental
+description: >
+  Hardened WMI detection covering PowerShell-based WMI invocation (no wmic.exe),
+  WMI event subscription persistence, and remote WMI execution. Detects
+  Invoke-WmiMethod and Invoke-CimMethod patterns, WmiPrvSE.exe spawning
+  shells, and subscription-based persistence via __EventFilter and
+  CommandLineEventConsumer class creation.
+references:
+  - https://attack.mitre.org/techniques/T1047/
+author: Aaron Jean
+date: 2026-06-13
+tags:
+  - attack.execution
+  - attack.persistence
+  - attack.t1047
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  wmiprvse_shell:
+    ParentImage|endswith: '\WmiPrvSE.exe'
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+      - '\wscript.exe'
+      - '\cscript.exe'
+      - '\mshta.exe'
+      - '\rundll32.exe'
+  powershell_wmi:
+    Image|endswith:
+      - '\powershell.exe'
+      - '\pwsh.exe'
+    CommandLine|contains:
+      - 'Invoke-WmiMethod'
+      - 'Invoke-CimMethod'
+      - 'Win32_Process'
+      - 'CommandLineEventConsumer'
+      - '__EventFilter'
+      - '__EventConsumer'
+  filter_legit:
+    ParentImage|contains:
+      - 'C:\Windows\System32\'
+    Image|contains:
+      - 'C:\Windows\System32\wbem\'
+  condition: (wmiprvse_shell or powershell_wmi) and not filter_legit
+falsepositives:
+  - SCCM client operations spawning processes via WMI
+  - Legitimate monitoring tools using WMI queries
+  - Windows Update operations
+level: high
